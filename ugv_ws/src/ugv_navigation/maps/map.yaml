@@ -1,0 +1,8 @@
+# Replace map.pgm with a real map generated via SLAM (see README: "Building a map").
+# slam_toolbox's map saver produces both files in this exact format.
+image: map.pgm
+resolution: 0.05
+origin: [-10.0, -10.0, 0.0]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.25

@@ -1,0 +1,40 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: nav2_rviz_plugins/Navigation 2
+    Name: Navigation 2
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Map
+      Topic: { Value: /map }
+      Name: Map
+      Enabled: true
+    - Class: rviz_default_plugins/RobotModel
+      Description Topic: { Value: /robot_description }
+      Name: RobotModel
+      Enabled: true
+    - Class: rviz_default_plugins/LaserScan
+      Topic: { Value: /scan }
+      Name: LaserScan
+      Enabled: true
+    - Class: nav2_rviz_plugins/ParticleCloud
+      Topic: { Value: /particle_cloud }
+      Name: ParticleCloud
+      Enabled: true
+    - Class: rviz_default_plugins/Path
+      Topic: { Value: /plan }
+      Name: GlobalPlan
+      Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: map
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: nav2_rviz_plugins/GoalTool
+    - Class: nav2_rviz_plugins/InitialPoseTool
+Window Geometry:
+  Height: 900
+  Width: 1500
