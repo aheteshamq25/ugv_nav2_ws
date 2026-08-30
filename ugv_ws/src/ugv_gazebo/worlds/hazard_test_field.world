@@ -95,12 +95,12 @@
     <!-- ============================================================
          NEGATIVE OBSTACLE: ditch / pit
          NOTE: a flat-beam 2D lidar physically cannot see a hole in the
-         ground (the beam passes over it) -- true negative-obstacle
+         ground (the beam passes over it)  true negative-obstacle
          detection needs a 3D lidar/depth camera + a costmap layer that
          reasons about ground-plane elevation, which is beyond a stock
          Nav2 2D costmap. As a practical stand-in that still gets your
          2D lidar to correctly flag this as "don't enter", I've added a
-         low curb/rim around the pit -- the rim is what the lidar
+         low curb/rim around the pit  the rim is what the lidar
          actually detects and routes around. The recessed floor below
          is there for visual/camera-based perception training (semantic
          segmentation, depth estimation) even though the planar lidar
@@ -140,7 +140,7 @@
     </model>
 
     <!-- ============================================================
-         BUSHES / DENSE FOLIAGE (semi-penetrable in real life -- here
+         BUSHES / DENSE FOLIAGE (semi-penetrable in real life  here
          they're solid collision like everything else; if you want
          them non-blocking for a "penetrable vegetation" test, delete
          their <collision> blocks and keep only <visual>)
@@ -170,7 +170,7 @@
     </model>
 
     <!-- ============================================================
-         MUD / UNPAVED DIRT PATCH -- visual-only terrain marker for
+         MUD / UNPAVED DIRT PATCH  visual-only terrain marker for
          camera/segmentation training. No <collision>, so it doesn't
          physically block the robot; true "untraversable due to mud"
          would need raised friction/costmap zoning beyond this file.
@@ -187,7 +187,7 @@
     </model>
 
     <!-- ============================================================
-         FENCE / LOW BOUNDARY WALL -- linear obstacle marking a
+         FENCE / LOW BOUNDARY WALL  linear obstacle marking a
          traversable-corridor limit
          ============================================================ -->
     <model name="fence_line_1">
@@ -203,7 +203,7 @@
     </model>
 
     <!-- ============================================================
-         DEBRIS / FALLEN LOGS -- sudden mid-path blockages
+         DEBRIS / FALLEN LOGS  sudden mid-path blockages
          ============================================================ -->
     <model name="fallen_log_1">
       <static>true</static>
@@ -235,7 +235,7 @@
     </model>
 
     <!-- ============================================================
-         CONSTRUCTION CONES / BARRELS -- high-contrast benchmark
+         CONSTRUCTION CONES / BARRELS high-contrast benchmark
          obstacles. NOTE: SDF has no native cone primitive; the "cone"
          below is a stacked-cylinder approximation (silhouette only).
          If you need an accurate cone mesh, download one from Gazebo
@@ -289,7 +289,7 @@
     </model>
 
     <!-- ============================================================
-         MOVING OBSTACLE -- an actor with a scripted trajectory rather
+         MOVING OBSTACLE  an actor with a scripted trajectory rather
          than a real physics body, so it moves on rails regardless of
          collisions (good for testing reactive avoidance, not for
          testing "the obstacle also reacts to the robot"). Requires
