@@ -1,0 +1,321 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="hazard_test_field">
+    <include><uri>model://sun</uri></include>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <surface><friction><ode><mu>0.9</mu><mu2>0.9</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grass</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+
+    <!-- ============================================================
+         RIGID POSITIVE OBSTACLES: rocks / boulders
+         ============================================================ -->
+    <model name="rock_1">
+      <static>true</static>
+      <pose>2.0 1.0 0.25 0.3 0.1 0.5</pose>
+      <link name="link">
+        <collision name="collision"><geometry><sphere><radius>0.35</radius></sphere></geometry></collision>
+        <visual name="visual">
+          <geometry><sphere><radius>0.35</radius></sphere></geometry>
+          <material><ambient>0.4 0.4 0.4 1</ambient><diffuse>0.45 0.45 0.45 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="rock_2">
+      <static>true</static>
+      <pose>-2.5 2.0 0.2 0.1 0.4 1.0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><sphere><radius>0.45</radius></sphere></geometry></collision>
+        <visual name="visual">
+          <geometry><sphere><radius>0.45</radius></sphere></geometry>
+          <material><ambient>0.38 0.37 0.35 1</ambient><diffuse>0.44 0.43 0.4 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ============================================================
+         VERTICAL FIXED OBSTACLES: trees / tree trunks
+         ============================================================ -->
+    <model name="tree_1">
+      <static>true</static>
+      <pose>3.5 -1.5 0 0 0 0</pose>
+      <link name="link">
+        <collision name="trunk_collision"><pose>0 0 0.75 0 0 0</pose>
+          <geometry><cylinder><radius>0.15</radius><length>1.5</length></cylinder></geometry></collision>
+        <visual name="trunk_visual"><pose>0 0 0.75 0 0 0</pose>
+          <geometry><cylinder><radius>0.15</radius><length>1.5</length></cylinder></geometry>
+          <material><ambient>0.35 0.2 0.1 1</ambient><diffuse>0.4 0.25 0.1 1</diffuse></material></visual>
+        <collision name="foliage_collision"><pose>0 0 1.9 0 0 0</pose>
+          <geometry><sphere><radius>0.9</radius></sphere></geometry></collision>
+        <visual name="foliage_visual"><pose>0 0 1.9 0 0 0</pose>
+          <geometry><sphere><radius>0.9</radius></sphere></geometry>
+          <material><ambient>0.1 0.4 0.1 1</ambient><diffuse>0.15 0.5 0.15 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <model name="tree_2">
+      <static>true</static>
+      <pose>-3.5 -2.0 0 0 0 1.2</pose>
+      <link name="link">
+        <collision name="trunk_collision"><pose>0 0 0.8 0 0 0</pose>
+          <geometry><cylinder><radius>0.16</radius><length>1.6</length></cylinder></geometry></collision>
+        <visual name="trunk_visual"><pose>0 0 0.8 0 0 0</pose>
+          <geometry><cylinder><radius>0.16</radius><length>1.6</length></cylinder></geometry>
+          <material><ambient>0.35 0.2 0.1 1</ambient><diffuse>0.4 0.25 0.1 1</diffuse></material></visual>
+        <collision name="foliage_collision"><pose>0 0 2.0 0 0 0</pose>
+          <geometry><sphere><radius>0.95</radius></sphere></geometry></collision>
+        <visual name="foliage_visual"><pose>0 0 2.0 0 0 0</pose>
+          <geometry><sphere><radius>0.95</radius></sphere></geometry>
+          <material><ambient>0.1 0.4 0.1 1</ambient><diffuse>0.15 0.5 0.15 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- ============================================================
+         NEGATIVE OBSTACLE: ditch / pit
+         NOTE: a flat-beam 2D lidar physically cannot see a hole in the
+         ground (the beam passes over it) -- true negative-obstacle
+         detection needs a 3D lidar/depth camera + a costmap layer that
+         reasons about ground-plane elevation, which is beyond a stock
+         Nav2 2D costmap. As a practical stand-in that still gets your
+         2D lidar to correctly flag this as "don't enter", I've added a
+         low curb/rim around the pit -- the rim is what the lidar
+         actually detects and routes around. The recessed floor below
+         is there for visual/camera-based perception training (semantic
+         segmentation, depth estimation) even though the planar lidar
+         won't "see" the depth itself.
+         ============================================================ -->
+         
+    <model name="ditch_1">
+      <static>true</static>
+      <pose>0.5 3.5 0 0 0 0</pose>
+      <link name="link">
+        <visual name="pit_floor_visual">
+          <pose>0 0 -0.28 0 0 0</pose>
+          <geometry><box><size>1.6 1.2 0.05</size></box></geometry>
+          <material><ambient>0.25 0.18 0.1 1</ambient><diffuse>0.3 0.22 0.12 1</diffuse></material>
+        </visual>
+        <collision name="rim_north"><pose>0 0.6 0.05 0 0 0</pose>
+          <geometry><box><size>1.6 0.08 0.1</size></box></geometry></collision>
+        <visual name="rim_north_visual"><pose>0 0.6 0.05 0 0 0</pose>
+          <geometry><box><size>1.6 0.08 0.1</size></box></geometry>
+          <material><ambient>0.3 0.3 0.28 1</ambient></material></visual>
+        <collision name="rim_south"><pose>0 -0.6 0.05 0 0 0</pose>
+          <geometry><box><size>1.6 0.08 0.1</size></box></geometry></collision>
+        <visual name="rim_south_visual"><pose>0 -0.6 0.05 0 0 0</pose>
+          <geometry><box><size>1.6 0.08 0.1</size></box></geometry>
+          <material><ambient>0.3 0.3 0.28 1</ambient></material></visual>
+        <collision name="rim_east"><pose>0.8 0 0.05 0 0 0</pose>
+          <geometry><box><size>0.08 1.2 0.1</size></box></geometry></collision>
+        <visual name="rim_east_visual"><pose>0.8 0 0.05 0 0 0</pose>
+          <geometry><box><size>0.08 1.2 0.1</size></box></geometry>
+          <material><ambient>0.3 0.3 0.28 1</ambient></material></visual>
+        <collision name="rim_west"><pose>-0.8 0 0.05 0 0 0</pose>
+          <geometry><box><size>0.08 1.2 0.1</size></box></geometry></collision>
+        <visual name="rim_west_visual"><pose>-0.8 0 0.05 0 0 0</pose>
+          <geometry><box><size>0.08 1.2 0.1</size></box></geometry>
+          <material><ambient>0.3 0.3 0.28 1</ambient></material></visual>
+      </link>
+    </model>
+
+    <!-- ============================================================
+         BUSHES / DENSE FOLIAGE (semi-penetrable in real life -- here
+         they're solid collision like everything else; if you want
+         them non-blocking for a "penetrable vegetation" test, delete
+         their <collision> blocks and keep only <visual>)
+         ============================================================ -->
+    <model name="bush_1">
+      <static>true</static>
+      <pose>1.0 -2.5 0.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><sphere><radius>0.4</radius></sphere></geometry></collision>
+        <visual name="visual">
+          <geometry><sphere><radius>0.4</radius></sphere></geometry>
+          <material><ambient>0.15 0.35 0.1 1</ambient><diffuse>0.2 0.42 0.15 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="bush_2">
+      <static>true</static>
+      <pose>-1.2 -1.0 0.22 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><sphere><radius>0.35</radius></sphere></geometry></collision>
+        <visual name="visual">
+          <geometry><sphere><radius>0.35</radius></sphere></geometry>
+          <material><ambient>0.15 0.35 0.1 1</ambient><diffuse>0.2 0.42 0.15 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ============================================================
+         MUD / UNPAVED DIRT PATCH -- visual-only terrain marker for
+         camera/segmentation training. No <collision>, so it doesn't
+         physically block the robot; true "untraversable due to mud"
+         would need raised friction/costmap zoning beyond this file.
+         ============================================================ -->
+    <model name="mud_patch_1">
+      <static>true</static>
+      <pose>-0.5 -3.5 0.01 0 0 0.2</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>2.0 1.5 0.01</size></box></geometry>
+          <material><ambient>0.28 0.18 0.1 1</ambient><diffuse>0.32 0.2 0.12 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ============================================================
+         FENCE / LOW BOUNDARY WALL -- linear obstacle marking a
+         traversable-corridor limit
+         ============================================================ -->
+    <model name="fence_line_1">
+      <static>true</static>
+      <pose>5.0 0.0 0.2 0 0 1.5708</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>4.0 0.06 0.4</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>4.0 0.06 0.4</size></box></geometry>
+          <material><ambient>0.5 0.4 0.25 1</ambient><diffuse>0.55 0.45 0.3 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ============================================================
+         DEBRIS / FALLEN LOGS -- sudden mid-path blockages
+         ============================================================ -->
+    <model name="fallen_log_1">
+      <static>true</static>
+      <pose>1.5 0.5 0.15 1.5708 0 0.4</pose>
+      <link name="link">
+        <collision name="collision"><geometry><cylinder><radius>0.15</radius><length>2.0</length></cylinder></geometry></collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.15</radius><length>2.0</length></cylinder></geometry>
+          <material><ambient>0.3 0.18 0.08 1</ambient><diffuse>0.35 0.22 0.1 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="debris_pile_1">
+      <static>true</static>
+      <pose>-2.0 1.0 0 0 0 0</pose>
+      <link name="link">
+        <collision name="a_collision"><pose>0 0 0.15 0.2 0.1 0</pose>
+          <geometry><box><size>0.4 0.3 0.2</size></box></geometry></collision>
+        <visual name="a_visual"><pose>0 0 0.15 0.2 0.1 0</pose>
+          <geometry><box><size>0.4 0.3 0.2</size></box></geometry>
+          <material><ambient>0.35 0.3 0.25 1</ambient></material></visual>
+        <collision name="b_collision"><pose>0.3 0.15 0.1 0 0.3 0.6</pose>
+          <geometry><box><size>0.3 0.2 0.15</size></box></geometry></collision>
+        <visual name="b_visual"><pose>0.3 0.15 0.1 0 0.3 0.6</pose>
+          <geometry><box><size>0.3 0.2 0.15</size></box></geometry>
+          <material><ambient>0.35 0.3 0.25 1</ambient></material></visual>
+      </link>
+    </model>
+
+    <!-- ============================================================
+         CONSTRUCTION CONES / BARRELS -- high-contrast benchmark
+         obstacles. NOTE: SDF has no native cone primitive; the "cone"
+         below is a stacked-cylinder approximation (silhouette only).
+         If you need an accurate cone mesh, download one from Gazebo
+         Fuel (app.gazebosim.org, search "construction cone") and swap
+         in an <include><uri>model://...</uri></include> instead.
+         ============================================================ -->
+    <model name="cone_1">
+      <static>true</static>
+      <pose>0.0 1.5 0 0 0 0</pose>
+      <link name="link">
+        <collision name="base_collision"><pose>0 0 0.1 0 0 0</pose>
+          <geometry><cylinder><radius>0.15</radius><length>0.2</length></cylinder></geometry></collision>
+        <visual name="base_visual"><pose>0 0 0.1 0 0 0</pose>
+          <geometry><cylinder><radius>0.15</radius><length>0.2</length></cylinder></geometry>
+          <material><ambient>0.9 0.4 0.0 1</ambient><diffuse>1.0 0.45 0.0 1</diffuse></material></visual>
+        <collision name="top_collision"><pose>0 0 0.35 0 0 0</pose>
+          <geometry><cylinder><radius>0.05</radius><length>0.3</length></cylinder></geometry></collision>
+        <visual name="top_visual"><pose>0 0 0.35 0 0 0</pose>
+          <geometry><cylinder><radius>0.05</radius><length>0.3</length></cylinder></geometry>
+          <material><ambient>0.9 0.4 0.0 1</ambient><diffuse>1.0 0.45 0.0 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <model name="cone_2">
+      <static>true</static>
+      <pose>0.6 1.7 0 0 0 0</pose>
+      <link name="link">
+        <collision name="base_collision"><pose>0 0 0.1 0 0 0</pose>
+          <geometry><cylinder><radius>0.15</radius><length>0.2</length></cylinder></geometry></collision>
+        <visual name="base_visual"><pose>0 0 0.1 0 0 0</pose>
+          <geometry><cylinder><radius>0.15</radius><length>0.2</length></cylinder></geometry>
+          <material><ambient>0.9 0.4 0.0 1</ambient><diffuse>1.0 0.45 0.0 1</diffuse></material></visual>
+        <collision name="top_collision"><pose>0 0 0.35 0 0 0</pose>
+          <geometry><cylinder><radius>0.05</radius><length>0.3</length></cylinder></geometry></collision>
+        <visual name="top_visual"><pose>0 0 0.35 0 0 0</pose>
+          <geometry><cylinder><radius>0.05</radius><length>0.3</length></cylinder></geometry>
+          <material><ambient>0.9 0.4 0.0 1</ambient><diffuse>1.0 0.45 0.0 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <model name="barrel_1">
+      <static>true</static>
+      <pose>-0.6 2.0 0.4 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><cylinder><radius>0.3</radius><length>0.8</length></cylinder></geometry></collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.3</radius><length>0.8</length></cylinder></geometry>
+          <material><ambient>0.7 0.05 0.05 1</ambient><diffuse>0.8 0.1 0.1 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ============================================================
+         MOVING OBSTACLE -- an actor with a scripted trajectory rather
+         than a real physics body, so it moves on rails regardless of
+         collisions (good for testing reactive avoidance, not for
+         testing "the obstacle also reacts to the robot"). Requires
+         Gazebo Classic; this <actor>/<trajectory> approach doesn't
+         carry over to Ignition/Harmonic without changes.
+         ============================================================ -->
+    <actor name="moving_obstacle_1">
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.4 0.4 0.6</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.4 0.4 0.6</size></box></geometry>
+          <material><ambient>0.8 0.1 0.1 1</ambient><diffuse>0.9 0.15 0.15 1</diffuse></material>
+        </visual>
+      </link>
+      <script>
+        <loop>true</loop>
+        <auto_start>true</auto_start>
+        <trajectory id="0" type="square">
+          <waypoint><time>0</time><pose>2.5 -2.5 0.3 0 0 0</pose></waypoint>
+          <waypoint><time>6</time><pose>2.5 2.5 0.3 0 0 0</pose></waypoint>
+          <waypoint><time>7</time><pose>2.5 2.5 0.3 0 0 3.14</pose></waypoint>
+          <waypoint><time>13</time><pose>2.5 -2.5 0.3 0 0 3.14</pose></waypoint>
+          <waypoint><time>14</time><pose>2.5 -2.5 0.3 0 0 0</pose></waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+  </world>
+</sdf>
