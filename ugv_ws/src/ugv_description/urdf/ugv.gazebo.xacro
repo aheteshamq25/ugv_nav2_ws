@@ -77,6 +77,48 @@
     </sensor>
   </gazebo>
 
+    <!-- ===================== 3D LIDAR (multi-channel point cloud) ===================== -->
+  <gazebo reference="lidar_3d_link">
+    <sensor name="lidar_3d" type="ray">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>5</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>180</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+          <vertical>
+            <samples>8</samples>
+            <resolution>1</resolution>
+            <min_angle>-0.2618</min_angle>
+            <max_angle>0.2618</max_angle>
+          </vertical>
+        </scan>
+        <range>
+          <min>0.3</min>
+          <max>15.0</max>
+          <resolution>0.03</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.02</stddev>
+        </noise>
+      </ray>
+      <plugin name="lidar_3d_plugin" filename="libgazebo_ros_ray_sensor.so">
+        <ros>
+          <remapping>~/out:=points</remapping>
+        </ros>
+        <output_type>sensor_msgs/PointCloud2</output_type>
+        <frame_name>lidar_3d_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
   <!-- ===================== IMU ===================== -->
   <gazebo reference="imu_link">
     <sensor name="imu_sensor" type="imu">
