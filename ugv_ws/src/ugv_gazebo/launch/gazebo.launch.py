@@ -43,7 +43,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
             'world',
-            default_value=os.path.join(gazebo_pkg, 'worlds', 'terrain_world.world'),
+            default_value=os.path.join(gazebo_pkg, 'worlds', 'hazard_test_field.world'),
             description='Full path to the Gazebo world file'
         ),
         gazebo,
