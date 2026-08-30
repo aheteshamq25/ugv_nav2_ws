@@ -34,7 +34,7 @@ Visualization Manager:
     - Class: rviz_default_plugins/MoveCamera
     - Class: rviz_default_plugins/Select
     - Class: nav2_rviz_plugins/GoalTool
-    - Class: nav2_rviz_plugins/InitialPoseTool
+    - Class: rviz_default_plugins/SetInitialPose
 Window Geometry:
   Height: 900
   Width: 1500
